@@ -19,19 +19,22 @@ pairs=( \
 	ENTER "\\\\n" \
 	SEMICOLON ";" \
 	APOSTROPHE "\\\\'" \
-	KPASTERISK "*" \
+	EQUAL "=" \
+	MINUS "-" \
+	PLUS "+" \
+	ASTERISK "*" \
 )
 
 > $TMP_FILE
-grep "#define KEY_[A-Z0-9]\s"  $INPUT_EVENT_CODES|\
-	sed "s/#define KEY_\([^\s\t]\+\)\s\+\([0-9]\+\)/\2, '\1'/" \
+grep "#define KEY_*[A-Z0-9]\s\|#define KEY_*KP[0-9]\s"  $INPUT_EVENT_CODES|\
+	sed "s/#define KEY_\(KP\)*\([^\s\t]\+\)\s\+\([0-9]\+\)/\3, '\2'/" \
 	>> $TMP_FILE
 
 for (( n=0; n < ${#pairs[@]}; n=$((n+2)) )); do
 	name=${pairs[$n]}
 	ascii=${pairs[$((n+1))]}
-	grep "#define KEY_$name\s" $INPUT_EVENT_CODES |\
-		sed "s@#define KEY_$name\s\+\([0-9]\+\)@\1, '$ascii'@" \
+	grep "#define KEY_KP$name\s\|#define KEY_$name\s" $INPUT_EVENT_CODES |\
+		sed "s@#define KEY_\(KP\)*$name\s\+\([0-9]\+\)@\2, '$ascii'@" \
 		>> $TMP_FILE
 done
 

@@ -256,7 +256,7 @@ void serialInputLoop(void* arg) {
 #include "parse-input-events.h"
 static Pipe gKeyboardPipe;
 struct KeyMsg {
-	unsigned short code;
+	unsigned short ascii;
 	unsigned int value;
 };
 static std::string gInputEventPath;
@@ -303,18 +303,21 @@ static void keyboardRead(void*)
 			if(EV_KEY == ev.type)
 			{
 				KeyMsg msg;
-				msg.code = ev.code;
+				bool found = false;
 				// TODO: binary search, assuming parse-input-events.h is ordered
 				for(size_t n = 0; n < keynames_size; ++n)
 				{
-					if(msg.code == keynames[n].code)
+					if(ev.code == keynames[n].code)
 					{
-						msg.code = keynames[n].ascii;
+						msg.ascii = keynames[n].ascii;
 						msg.value = ev.value; // r 0 for EV_KEY for release, 1 for keypress and 2 for autorepeat.
 						gKeyboardPipe.writeNonRt(msg);
+						found = true;
 						break;
 					}
 				}
+				if(!found)
+					printf("NOT FOUND code: %d\n", ev.code);
 			}
 		}
 	}
@@ -1466,7 +1469,7 @@ void render(BelaContext *context, void *userData)
 					offOn = (msg.value == 0) ? 0 : 1;
 				libpd_start_message(3);
 				libpd_add_float(offOn);
-				libpd_add_float(msg.code);
+				libpd_add_float(msg.ascii);
 				libpd_add_float(0);
 				libpd_finish_message("pd", "key");
 			}

@@ -25,6 +25,9 @@ pairs=( \
 	MINUS "-" \
 	PLUS "+" \
 	ASTERISK "*" \
+	TAB "\\\\t" \
+	BACKSPACE "\\\\b" \
+	ESC "\\\\e" \
 )
 
 > $TMP_FILE

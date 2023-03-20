@@ -4,6 +4,7 @@ struct parse_key {
 	char ascii;
 };
 struct parse_key keynames[] = {
+{1, '\e' }, // KEY_ESC
 {2, '1' }, // KEY_1
 {3, '2' }, // KEY_2
 {4, '3' }, // KEY_3
@@ -16,6 +17,8 @@ struct parse_key keynames[] = {
 {11, '0' }, // KEY_0
 {12, '-' }, // KEY_MINUS
 {13, '=' }, // KEY_EQUAL
+{14, '\b' }, // KEY_BACKSPACE
+{15, '\t' }, // KEY_TAB
 {16, 'Q' }, // KEY_Q
 {17, 'W' }, // KEY_W
 {18, 'E' }, // KEY_E
